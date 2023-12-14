@@ -88,8 +88,6 @@ class TopMode:
         # print(tail_exist)
         # print("tail_exist")
 
-        print("*****22_1")
-
         # 머리와 도살을 잡았을때만 진행 시킴
         if head_exist == 1 and dorsal_exist == 1:
             top_result = {} # 전체 결과 값
@@ -99,7 +97,6 @@ class TopMode:
 
             #색 분석하여 형질 추출 함수
             result = self.color_output(dorsal_img)
-            print("*****22_2")
             #2차형질로 계산
             second_percent = result['second']
             if second_percent != 'null':

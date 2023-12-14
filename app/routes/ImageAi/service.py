@@ -22,6 +22,8 @@ from utils.linebreeding_utils import morph_re_selection, score_compare_selection
 
 base_dir = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 class image_ai_service:
+
+    # 가치판단 진행
     async def assess_value(self, data: ValueAnalyze, files: List[UploadFile]):
         topAnalyzer = TopMode(base_dir + '/core/analyzer_top/datasets/train/weights/best.pt')
         lateralAnalyzer = Lateral(base_dir + '/core/analyzer_lateral/datasets/train/weights/best.pt')
@@ -59,14 +61,10 @@ class image_ai_service:
         img_checker.img_checking(leftLateralImgPath)
         img_checker.img_checking(righLateraltImgPath)
 
-        print("*****11")
-
         # 머리, 등, 꼬리 검사
         try:
-            print("*****22")
             topResult = topAnalyzer.analyze_image(topImgPath, current_time + "_top_", save_dir)
             print(topResult)
-            print("*****33")
         except Exception as e:
             # 예외 처리
             error_message = 'Top Part Error'
@@ -98,6 +96,7 @@ class image_ai_service:
                                             total_score, leftResult, rightResult)
         return result
 
+    # 가치판단 진행할때 데이터를 저장해주는 기능
     async def analyzer_auto_save(
             self,
             result: ValueAnalyzerCreate,
@@ -126,6 +125,26 @@ class image_ai_service:
         result2.right_img = result.right_img
         return result2
 
+    # 가치판단에서 저장하지 않고 데이터 리턴을 위해 정제해주는 기능
+    async def analyzer_refine_data(
+            self,
+            result: ValueAnalyzerCreate,
+            files: List[UploadFile] = File(...)):
+        # s3_uploader를 사용하여 이미지 업로드
+        for idx, file in enumerate(files):
+            uploaded_image = s3_uploader.upload_image(file, 'ImageAi')
+            image_url = uploaded_image['message'].split('URL: ')[1]
+            # idx에 따라 필드 설정
+            if idx == 0:
+                result.top_img = image_url
+            elif idx == 1:
+                result.left_img = image_url
+            elif idx == 2:
+                result.right_img = image_url
+
+        return result
+
+    # 가치판단 데이터가 저장된 상태에서 idx와 petname을 수정해주는 기능
     async def analyzer_save(
             self,
             idx: int,
@@ -146,6 +165,7 @@ class image_ai_service:
         # 변경사항 커밋
         session.commit()
 
+    # 암수 구분하는 기능
     async def gender_discrimination(
             self,
             file: UploadFile):
@@ -187,7 +207,7 @@ class image_ai_service:
         result = {"result": genderResult, "returnImg": returnImg['message'].split('URL: ')[1]}
         return result
 
-
+    #도마뱀 라인 브리딩 분석 진행하는 기능
     async def get_analyzer_data(  # 분석 진행하기
             self,
             UserValueAnalyzer: ValueAnalyzerCreate,
