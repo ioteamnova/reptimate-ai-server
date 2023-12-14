@@ -1,9 +1,9 @@
 from typing import List,Union
 from fastapi import UploadFile, File, Depends
 from sqlalchemy.orm import Session
-from core.analyzer_lateral.lateral import Lateral
-from core.analyzer_top.topmode_test import TopMode
-from core.analyzer_gender.gender import Gender
+from core.analyzer_lateral.lateral_predict import Lateral
+from core.analyzer_top.topmode_predict import TopMode
+from core.analyzer_gender.gender_predict import Gender
 from core.analyzer_img_checker.img_checker import Img_checker
 from utils.S3 import s3_uploader
 from routes.ImageAi.schemas.ValueAnalyzer_schema import ValueAnalyzerSchema
@@ -32,6 +32,7 @@ class image_ai_service:
         topImgPath = ''
         leftLateralImgPath = ''
         righLateraltImgPath = ''
+
         # 이미지를 순회하면서 각각 원본 이름으로 저장
         for idx, file in enumerate(files):
             # 현재 시간을 포함한 파일 이름 생성
@@ -52,22 +53,27 @@ class image_ai_service:
                 contents = await file.read()
                 f.write(contents)
 
+
         # 이미지가 크레스티드 게코인지 확인 - 현재는 gecko 클래스 탐지하면 통과하함
         img_checker.img_checking(topImgPath)
         img_checker.img_checking(leftLateralImgPath)
         img_checker.img_checking(righLateraltImgPath)
 
+        print("*****11")
+
         # 머리, 등, 꼬리 검사
         try:
-            topResult = topAnalyzer.analyze_image(topImgPath, current_time + "_top_")
+            print("*****22")
+            topResult = topAnalyzer.analyze_image(topImgPath, current_time + "_top_", save_dir)
             print(topResult)
+            print("*****33")
         except Exception as e:
             # 예외 처리
             error_message = 'Top Part Error'
             return {"error": error_message}
         # 왼쪽 레터럴 검사
         try:
-            leftResult = lateralAnalyzer.analyze_image(leftLateralImgPath, current_time + "_left_")
+            leftResult = lateralAnalyzer.analyze_image(leftLateralImgPath, current_time + "_left_", save_dir)
             print(leftResult)
         except Exception as e:
             # 예외 처리
@@ -75,7 +81,7 @@ class image_ai_service:
             return {"error": error_message}
         # 오른쪽 레터럴 검사
         try:
-            rightResult = lateralAnalyzer.analyze_image(righLateraltImgPath, current_time + "_right_")
+            rightResult = lateralAnalyzer.analyze_image(righLateraltImgPath, current_time + "_right_", save_dir)
             print(rightResult)
         except Exception as e:
             # 예외 처리

@@ -14,7 +14,7 @@ class TopMode:
     def __init__(self, yolo_model_path):
         self.yolo_model = YOLO(yolo_model_path)
 
-    def analyze_image(self, image_path, date):
+    def analyze_image(self, image_path, date, save_dir):
         image = cv2.imread(image_path)
         results = self.yolo_model.predict(source=image_path, save=False, imgsz=320)
 
@@ -77,7 +77,8 @@ class TopMode:
                 b, g, r = cv2.split(cropped_image)
                 rgba = [b, g, r, alpha]
                 dst = cv2.merge(rgba, 4)
-                cropImgPath = base_dir + '/core/analyzer_lateral/datasets/test/images/' + date + 'cropped_image_' + self.yolo_model.names[int(c)] + ".png"
+                # cropImgPath = base_dir + '/core/analyzer_lateral/datasets/test/images/' + date + 'cropped_image_' + self.yolo_model.names[int(c)] + ".png"
+                cropImgPath = save_dir + date + 'cropped_image_' + self.yolo_model.names[int(c)] + ".png"
                 cv2.imwrite(cropImgPath, dst)
                 num = num + 1
 
@@ -87,16 +88,18 @@ class TopMode:
         # print(tail_exist)
         # print("tail_exist")
 
+        print("*****22_1")
+
         # 머리와 도살을 잡았을때만 진행 시킴
         if head_exist == 1 and dorsal_exist == 1:
             top_result = {} # 전체 결과 값
             #도살 - 색 분석, 예외처리
             # 이미지 열기
-            dorsal_img = Image.open(base_dir + "/core/analyzer_lateral/datasets/test/images/" + date + "cropped_image_dorsal.png")
+            dorsal_img = Image.open(save_dir + date + "cropped_image_dorsal.png")
 
             #색 분석하여 형질 추출 함수
             result = self.color_output(dorsal_img)
-
+            print("*****22_2")
             #2차형질로 계산
             second_percent = result['second']
             if second_percent != 'null':
@@ -124,7 +127,7 @@ class TopMode:
 
             #머리 - (세로/가로)X100, 예외처리
             # 이미지 열기
-            head_img = Image.open(base_dir + "/core/analyzer_lateral/datasets/test/images/" + date + "cropped_image_head.png")
+            head_img = Image.open(save_dir + date + "cropped_image_head.png")
 
             width, height = head_img.size
             # 이미지 크기 (세로/가로) X 100
@@ -153,11 +156,11 @@ class TopMode:
             top_result["tail_score"] = tail_score
             os.remove(image_path)
             if head_exist == 1:
-                os.remove(base_dir + "/core/analyzer_lateral/datasets/test/images/" + date + "cropped_image_dorsal.png")
+                os.remove(save_dir + date + "cropped_image_dorsal.png")
             if head_exist == 1:
-                os.remove(base_dir + "/core/analyzer_lateral/datasets/test/images/" + date + "cropped_image_head.png")
+                os.remove(save_dir + date + "cropped_image_head.png")
             if tail_exist == 1:
-                os.remove(base_dir + "/core/analyzer_lateral/datasets/test/images/" + date + "cropped_image_tail.png")
+                os.remove(save_dir + date + "cropped_image_tail.png")
             print("top_result result, ", top_result)
             return top_result
        #다시 찍으셈
