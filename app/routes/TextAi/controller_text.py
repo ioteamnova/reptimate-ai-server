@@ -19,20 +19,23 @@ async def chattingBot(data: ChattingBot = Depends(),
 
     question = await text_ai_service.transfrom_request_question(data.request_text)
 
-    print("question")
-    print(question)
-    print('question')
+    # print("question")
+    # print(question)
+    # print(len(question))
+    # print('question')
 
-    #챗봇 분류해주는 기능
-    predict_result = await text_ai_service.response_chatting_bot(question)
+    if len(question) != 0:
+        # 챗봇 분류해주는 기능
+        predict_result = await text_ai_service.response_chatting_bot(question)
 
-    print("predict_result")
-    print(predict_result)
-    print('predict_result')
+        # print("predict_result")
+        # print(predict_result)
+        # print('predict_result')
 
-    #db에서 분류 class에 맞는 내용 가져오는 기능
-    document = await text_ai_service.get_chatting_document(predict_result, session)
+        # db에서 분류 class에 맞는 내용 가져오는 기능
+        document = await text_ai_service.get_chatting_document(predict_result, session)
 
+        return document
+    else:
+        return "질문을 잘 이해하지 못했어요."
 
-
-    return document

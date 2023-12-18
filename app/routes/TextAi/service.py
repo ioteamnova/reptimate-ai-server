@@ -12,6 +12,7 @@ from core.database.conn import db
 from fastapi import HTTPException
 import shutil
 import json
+import re
 
 base_dir = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
 import fasttext
@@ -26,33 +27,24 @@ class text_ai_service:
         print(trans_data)
         print("초기 데이터*****")
 
-        # 쓸대 없는 말들을 다 잡아야한다.
-
-
-        #단어 갯수를 알 수 있을까?
-
-        # 부사를 전부 빼버릴까?
+        #한글만 남기고 다 지울것
+        trans_data = re.sub(r"[^\uAC00-\uD7A3\s]", "", trans_data)
 
         #의가 있는 경우
         if trans_data.find('의') > -1:
             trans_data = trans_data.replace('의', '')
 
         #크레스티드가 없는 경우
+        #크레스티드가 없는 경우
         if trans_data.find('크레스티드') == -1:
             if trans_data.find('크레') > -1:
                 trans_data = trans_data.replace('크레', '크레스티드 게코')
                 print("크레 찾음")
-                # trans_data =
-            # else:
-
-
 
         print("변환 데이터*****")
         # print(trans_data.find('크레'))
         print(trans_data)
         print("변환 데이터*****")
-
-
 
         return trans_data
 

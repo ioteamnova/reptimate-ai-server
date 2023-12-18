@@ -63,7 +63,10 @@ class image_ai_service:
 
         # 머리, 등, 꼬리 검사
         try:
+            print("!!!!!!!")
             topResult = topAnalyzer.analyze_image(topImgPath, current_time + "_top_", save_dir)
+            print("!!!!!!!")
+
             print(topResult)
         except Exception as e:
             # 예외 처리

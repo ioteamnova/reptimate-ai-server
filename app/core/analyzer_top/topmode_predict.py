@@ -82,11 +82,13 @@ class TopMode:
                 cv2.imwrite(cropImgPath, dst)
                 num = num + 1
 
-        # print("head_exist")
-        # print(head_exist)
-        # print(dorsal_exist)
-        # print(tail_exist)
-        # print("tail_exist")
+        print("!!!!!!!")
+        print("head_exist")
+        print(head_exist)
+        print(dorsal_exist)
+        print(tail_exist)
+        print("tail_exist")
+        print("!!!!!!!")
 
         # 머리와 도살을 잡았을때만 진행 시킴
         if head_exist == 1 and dorsal_exist == 1:
@@ -94,9 +96,10 @@ class TopMode:
             #도살 - 색 분석, 예외처리
             # 이미지 열기
             dorsal_img = Image.open(save_dir + date + "cropped_image_dorsal.png")
-
+            print("!!!!!!!1")
             #색 분석하여 형질 추출 함수
             result = self.color_output(dorsal_img)
+            print("!!!!!!!2")
             #2차형질로 계산
             second_percent = result['second']
             if second_percent != 'null':
@@ -118,7 +121,6 @@ class TopMode:
             else:
                 second_percent == 0
                 dorsal_score = 50
-
             top_result["dorsal_second_percent"] = math.floor(second_percent)
             top_result["dorsal_score"] = dorsal_score
 
