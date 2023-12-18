@@ -37,5 +37,11 @@ async def chattingBot(data: ChattingBot = Depends(),
 
         return document
     else:
-        return "질문을 잘 이해하지 못했어요."
+        result_json = {
+            "classification": "분류되지 않음",
+            "probability_predicted": "0.0",  # 예측 확률
+            "document": "질문을 잘 이해하지 못했습니다.",
+        }
+
+        return result_json
 
