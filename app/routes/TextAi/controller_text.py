@@ -19,18 +19,9 @@ async def chattingBot(data: ChattingBot = Depends(),
 
     question_arr = await text_ai_service.transfrom_request_question(data.request_text)
 
-    # print("question")
-    # print(question_arr)
-    # print(len(question_arr))
-    # print('question')
-
     if len(question_arr) != 0:
         # 챗봇 분류해주는 기능
         predict_result = await text_ai_service.response_chatting_bot(question_arr)
-
-        # print("predict_result")
-        # print(predict_result)
-        # print('predict_result')
 
         # db에서 분류 class에 맞는 내용 가져오는 기능
         document = await text_ai_service.get_chatting_document(predict_result, session)
