@@ -17,16 +17,16 @@ async def chattingBot(data: ChattingBot = Depends(),
                       text_ai_service: text_ai_service = Depends(text_ai_service),
                       session: Session = Depends(db.session)):
 
-    question = await text_ai_service.transfrom_request_question(data.request_text)
+    question_arr = await text_ai_service.transfrom_request_question(data.request_text)
 
     # print("question")
-    # print(question)
-    # print(len(question))
+    # print(question_arr)
+    # print(len(question_arr))
     # print('question')
 
-    if len(question) != 0:
+    if len(question_arr) != 0:
         # 챗봇 분류해주는 기능
-        predict_result = await text_ai_service.response_chatting_bot(question)
+        predict_result = await text_ai_service.response_chatting_bot(question_arr)
 
         # print("predict_result")
         # print(predict_result)
