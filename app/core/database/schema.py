@@ -17,8 +17,8 @@ from core.database.conn import Base, db
 class BaseMixin:
     idx = Column(Integer, primary_key=True, index=True)
     created_at = Column(DateTime, nullable=False, default=func.utc_timestamp())
-    updated_at = Column(DateTime, nullable=False, default=func.utc_timestamp(), onupdate=func.utc_timestamp())
-    deleted_at = Column(DateTime, nullable=True, default=None, onupdate=func.utc_timestamp())
+    updated_at = Column(DateTime, nullable=False, default=None, onupdate=func.utc_timestamp())
+    deleted_at = Column(DateTime, nullable=True, default=None, onupdate=None)
 
     def __init__(self):
         self._q = None
